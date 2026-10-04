@@ -1,0 +1,11 @@
+{
+    "validUser": {
+        "username": "trainer@way2automation.com",
+        "password": "way2automation"
+    },
+
+    "invalidUser": {
+        "username" : "test123@gmail.com",
+        "password" : "test123"
+    }
+}
