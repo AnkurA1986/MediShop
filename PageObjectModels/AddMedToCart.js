@@ -15,39 +15,55 @@ class AddMedToCart {
         this.prodType = page.locator('.product-cat');
     }
 
-    async SearchFeverMedicine(searchType) {
+    async SearchFeverMedicine(searchType)
+    {
         await this.ShopButton.click();
         await expect(this.PageHeading).toBeVisible();
         await this.SearchBox.clear();
         await this.SearchBox.fill(searchType);
         await this.page.keyboard.press('Enter');
-        await this.ProductCards.first().waitFor({ state: 'visible' });
+        await this.page.waitForLoadState('networkidle');
+        const productCount = await this.ProductCards.count();
+
+        if (productCount > 0)
+        {
+            await this.ProductCards.first().waitFor({ state: 'visible' });
+            const ProdTypeCount = await this.prodType.count();
+            let medName;
+            for (let i = 0; i < ProdTypeCount; i++) 
+                {
+                const text = await this.prodType.nth(i).textContent()??'';
+                if (text.toLowerCase() === searchType) 
+                    {
+                    medName = (await this.ProductCards.nth(i).locator('h3').textContent()) ?? '';
+                    await this.ProductCards.nth(i).locator('.product-foot button').click();
+                    break;
+                    }
+                }
+            await this.toastMessage.waitFor({ state: 'visible' });
+            console.log(await this.toastMessage.textContent());
+            await this.cartIcon.click();
+            await expect(this.CartItems.first()).toBeVisible();
+            const CartItemsCount = await this.CartItems.count();
+            for (let i = 0; i < CartItemsCount; i++) 
+                {
+                    if (await this.CartItemName.nth(i).textContent() === medName) 
+                    {
+                    await expect(true,`${medName} added to cart successfully`).toBeTruthy();
+                    }
+                    else
+                        {
+                        await expect(true, `${searchType} medicine not added to cart`).toBeFalsy();
+                        }
+                    }
+        }
+
+        else
+        {
+            expect (false,`${searchType} medicine not found`).toBeTruthy();
+            return;
+        }
     }
 
-    async AddToCart_FeverMedicine(search) {
-        //const searchLowerCase = search.toLowerCase();
-        const ProdTypeCount = await this.prodType.count();
-        let medName;
-        for (let i = 0; i < ProdTypeCount; i++) {
-            if ((await this.prodType.nth(i).textContent()).toLowerCase() === search) {
-                medName = await this.ProductCards.nth(i).locator('h3').textContent()
-                await this.ProductCards.nth(i).locator('.product-foot button').click();
-                break;
-            }
-        }
-        await this.toastMessage.waitFor({ state: 'visible' });
-        console.log(await this.toastMessage.textContent());
-        await this.cartIcon.click();
-        await expect(this.CartItems.first()).toBeVisible();
-        const CartItemsCount = await this.CartItems.count();
-        for (let i = 0; i < CartItemsCount; i++) {
-            if (await this.CartItemName.nth(i).textContent() === medName) {
-                await expect(true).toBeTruthy();
-            }
-            else {
-                await expect(true).toBeFalsy();
-            }
-        }
-    }
 }
 module.exports = { AddMedToCart };
