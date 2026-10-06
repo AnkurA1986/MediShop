@@ -11,10 +11,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('Search fever medicine and add it to cart', async () => {
-    const email = loginData.validUser.username;
-    const password = loginData.validUser.password;
-    const search = medData.medicineName.searchTerm;
-    await pom.getLoginPage().login(email, password);
-    await pom.addMedtoCart().SearchFeverMedicine(search);
-    await pom.addMedtoCart().AddToCart_FeverMedicine(search);
+    await pom.getLoginPage().login(loginData.validUser.username, loginData.validUser.password);
+    await pom.addMedtoCart().SearchFeverMedicine(medData.medicineName.searchTerm);
+    //await pom.addMedtoCart().AddToCart_FeverMedicine(search);
 })

@@ -9,18 +9,14 @@ test.beforeEach(async({page})=>{
 })
 
 test('Login with valid user', async () => {
-    const email = loginData.validUser.username;
-    const password = loginData.validUser.password;
     await pom.getLoginPage().goTo();
-    await pom.getLoginPage().EnterValidLoginCredentials(email, password);
+    await pom.getLoginPage().EnterValidLoginCredentials(loginData.validUser.username, loginData.validUser.password);
     await pom.getLoginPage().LoginSuccessfull();
 })
 
 test('Login with invalid user', async () => {
-    const email = loginData.invalidUser.username;
-    const password = loginData.invalidUser.password;
     await pom.getLoginPage().goTo();
-    await pom.getLoginPage().InvalidLogin(email, password);
+    await pom.getLoginPage().InvalidLogin(loginData.invalidUser.username, loginData.invalidUser.password);
 })
 
 test('Login with Auto fill details', async () => {
